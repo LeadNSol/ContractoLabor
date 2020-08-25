@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/nav_item_count"
+        android:icon="@drawable/ic_baseline_close"
+        android:title="@string/count"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+
+    <item
+        android:id="@+id/nav_assing_worker_to_contract"
+        android:title="@string/assign_to_contract"
+        app:showAsAction="always" />
+
+</menu>

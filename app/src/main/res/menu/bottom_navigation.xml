@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_contract"
+            android:icon="@drawable/ic_baseline_home_work"
+            android:title="@string/menu_contract" />
+        <item
+            android:id="@+id/nav_workers"
+            android:icon="@drawable/ic_baseline_sports_kabaddi"
+            android:title="@string/menu_workers" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_baseline_how_to_reg"
+            android:title="@string/menu_profile" />
+        <item
+            android:id="@+id/nav_history"
+            android:icon="@drawable/ic_baseline_history"
+            android:title="@string/menu_history" />
+    </group>
+</menu>

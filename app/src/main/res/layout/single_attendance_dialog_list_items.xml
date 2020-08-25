@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="10dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <ImageView
+                android:id="@+id/img_worker"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_margin="2dp"
+                android:layout_weight="0.8"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher" />
+
+
+            <TextView
+                android:id="@+id/txt_worker_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="2dp"
+                android:layout_weight="1.1"
+                android:gravity="center"
+                android:text="@string/worker_name"
+                android:textColor="@color/colorSmokyBlack"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/txt_worker_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="2dp"
+                android:layout_weight="0.7"
+                android:gravity="center"
+                android:text="@string/worker_type"
+                android:textColor="@color/colorSmokyBlack"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/txt_worker_at"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/work_at"
+                android:textColor="@color/colorSmokyBlack"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/txt_worker_daily_wage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/wage"
+                android:textColor="@color/colorSmokyBlack"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/txt_worker_days_of_work"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="2dp"
+                android:layout_weight="0.8"
+                android:gravity="center"
+                android:text="@string/days_of_work"
+                android:textColor="@color/colorSmokyBlack"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+            <TextView
+                android:id="@+id/txt_absent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/style_btn"
+                android:gravity="center"
+                android:padding="6dp"
+                android:text="@string/absent"
+                android:textColor="@color/colorRed" />
+
+            <TextView
+                android:id="@+id/txt_present"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/style_btn"
+                android:gravity="center"
+                android:padding="6dp"
+                android:text="@string/present"
+                android:textColor="@color/colorPrimaryDark" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "318359498278",
+    "firebase_url": "https://contractolabor-19dac.firebaseio.com",
+    "project_id": "contractolabor-19dac",
+    "storage_bucket": "contractolabor-19dac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318359498278:android:ab60f1acac5f0f67adc0e7",
+        "android_client_info": {
+          "package_name": "com.appso.contractolabor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "318359498278-5h8tv471j10r1et6vltjt4jlueu5aboa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.appso.contractolabor",
+            "certificate_hash": "5e8b0d26ba865ee0b6bd205001029816d15667ec"
+          }
+        },
+        {
+          "client_id": "318359498278-upv612j8faadh6k4cbdqb75o4vpekev5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlqCes61JQ-2IMXnhk2L-t7d8Beyw0CEo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "318359498278-upv612j8faadh6k4cbdqb75o4vpekev5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
