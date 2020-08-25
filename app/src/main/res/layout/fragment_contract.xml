@@ -4,8 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.leadn.contractolabor.ui.contracts.ContractFragment">
-
-
     <Button
         android:id="@+id/btn_add_new_project"
         android:layout_width="150dp"
