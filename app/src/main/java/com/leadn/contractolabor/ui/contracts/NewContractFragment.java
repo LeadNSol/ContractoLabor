@@ -125,21 +125,15 @@ public class NewContractFragment extends Fragment {
                     OwnerResponse ownerResponse = response.body();
                     if (ownerResponse != null) {
                         ownerList = ownerResponse.getContractOwnerList();
+                        List<String> ownerNames = new ArrayList<>();
                         if (ownerList.size() > 0) {
-                            List<String> ownerNames = new ArrayList<>();
                             for (OwnerResponse.ContractOwner contractOwner : ownerList) {
                                 ownerNames.add(contractOwner.getName());
-                                ownerNames.add("other");
-                                spOwners.setItems(ownerNames);
-
                             }
 
-                        } else {
-                            List<String> ownerNames = new ArrayList<>();
-                            //ownerNames.add(contractOwner.getName());
-                            ownerNames.add("other");
-                            spOwners.setItems(ownerNames);
                         }
+                        ownerNames.add("other");
+                        spOwners.setItems(ownerNames);
                     }
                 }
             }
