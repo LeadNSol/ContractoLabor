@@ -9,15 +9,14 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 
 public interface WorkerServices {
-
-    @GET("workers/getWorkers.php")
-    Call<WorkerResponse> getWorkers();
+    @FormUrlEncoded
+    @POST("workers/getWorkers.php")
+    Call<WorkerResponse> getWorkers(@Field("userId") String userId);
 
     @Multipart
     @POST("workers/postWorker.php")
@@ -33,4 +32,11 @@ public interface WorkerServices {
     @FormUrlEncoded
     @POST("workers/getWorkerAttendance.php")
     Call<AttendanceResponse> getWorkerAttendance(@Field("worker_id") String workerId);
+
+    @FormUrlEncoded
+    @POST("workers/shiftWorker.php")
+    Call<StatusResponse> shiftWorker(@Field("fromContract") String fromContract,
+                                     @Field("toContract") String toContract,
+                                     @Field("workerId") String workerId,
+                                     @Field("workingDays") String workingDays);
 }

@@ -20,7 +20,7 @@ import java.util.List;
 public class AssignWorkerToContractAdapter extends RecyclerView.Adapter<AssignWorkerToContractAdapter.AssignWorkerToContractViewHolder> {
     private Context mContext;
     private List<WorkerResponse.Worker> mWorkersList;
-     public static List<String> mSelectedWorkerList;
+    public static List<String> mSelectedWorkerList;
     private boolean isLongPressedOnce = false;
 
     public AssignWorkerToContractAdapter(Context mContext,

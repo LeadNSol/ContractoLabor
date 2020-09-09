@@ -19,6 +19,15 @@ public class WorkerResponse {
         @SerializedName("seq_id")
         @Expose
         private String seqId;
+        @SerializedName("contract_id")
+        @Expose
+        private String contractId;
+        @SerializedName("contract_name")
+        @Expose
+        private String contractName;
+        @SerializedName("contract_Address")
+        @Expose
+        private String contractAddress;
         @SerializedName("name")
         @Expose
         private String name;
@@ -64,12 +73,21 @@ public class WorkerResponse {
         @SerializedName("created_by")
         @Expose
         private String createdBy;
-        @SerializedName("contract_id")
-        @Expose
-        private String contractId;
 
         public String getSeqId() {
             return seqId;
+        }
+
+        public String getContractId() {
+            return contractId;
+        }
+
+        public String getContractName() {
+            return contractName;
+        }
+
+        public String getContractAddress() {
+            return contractAddress;
         }
 
         public String getName() {
@@ -98,10 +116,6 @@ public class WorkerResponse {
 
         public String getDaysOfAbsence() {
             return daysOfAbsence;
-        }
-
-        public String getContractId() {
-            return contractId;
         }
 
         public String getTotalWage() {
@@ -134,29 +148,6 @@ public class WorkerResponse {
 
         public String getCreatedBy() {
             return createdBy;
-        }
-
-        @Override
-        public String toString() {
-            return "Worker{" +
-                    "seqId='" + seqId + '\'' +
-                    ", name='" + name + '\'' +
-                    ", type='" + type + '\'' +
-                    ", phone='" + phone + '\'' +
-                    ", address='" + address + '\'' +
-                    ", dailyWage='" + dailyWage + '\'' +
-                    ", daysOfWork='" + daysOfWork + '\'' +
-                    ", daysOfAbsence='" + daysOfAbsence + '\'' +
-                    ", totalWage='" + totalWage + '\'' +
-                    ", remainingWage='" + remainingWage + '\'' +
-                    ", isActive='" + isActive + '\'' +
-                    ", isFree='" + isFree + '\'' +
-                    ", paymentStatus='" + paymentStatus + '\'' +
-                    ", imageUrl='" + imageUrl + '\'' +
-                    ", createdDate='" + createdDate + '\'' +
-                    ", createdBy='" + createdBy + '\'' +
-                    ", contractId='" + contractId + '\'' +
-                    '}';
         }
     }
 }

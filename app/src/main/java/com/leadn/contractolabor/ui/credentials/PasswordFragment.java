@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,7 +50,6 @@ public class PasswordFragment extends Fragment {
     private EditText etPassword;
     private TextInputLayout textInputLayoutPassword;
     private InputValidator mInputValidator;
-    private Button btnLogin;
 
     private void initViews() {
         mActivity = (AppCompatActivity) getActivity();
@@ -60,11 +60,14 @@ public class PasswordFragment extends Fragment {
 
         etPassword = view.findViewById(R.id.et_password);
         textInputLayoutPassword = view.findViewById(R.id.text_input_layout_password);
-        btnLogin = view.findViewById(R.id.btn_login);
+        Button btnLogin = view.findViewById(R.id.btn_login);
         btnLogin.setOnClickListener(view -> {
             login();
         });
 
+        TextView txtUserPhone = view.findViewById(R.id.txt_user_phone);
+        if (SharedPreferenceHelper.getHelper().getPhoneNumber() != null)
+            txtUserPhone.setText(SharedPreferenceHelper.getHelper().getPhoneNumber());
 
     }
 

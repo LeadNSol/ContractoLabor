@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#11139F</color>
-    <color name="colorPrimaryDark">#101168</color>
+    <color name="colorPrimary">#3031A6</color>
+    <color name="colorPrimaryDark">#161783</color>
     <color name="colorAccent">#193173</color>
 
     <color name="colorSmokyBlack">#121111</color>
-    <color name="colorGray">#8A8383</color>
+    <color name="colorGray">#706D6D</color>
+    <color name="colorLightGray">#CCBEBE</color>
     <color name="colorWhite">#F8F8F8</color>
-    <color name="colorDarkYellow">#FFE600</color>
+    <color name="colorDimWhite">@color/fui_bgTwitter</color>
+    <color name="colorDarkYellow">#FFC400</color>
     <color name="colorGreen">#00C853</color>
+    <color name="colorPurple">#7502AF</color>
     <color name="colorRed">#D50000</color>
     <color name="colorLightBlue">#0091EA</color>
-
+   
 </resources>

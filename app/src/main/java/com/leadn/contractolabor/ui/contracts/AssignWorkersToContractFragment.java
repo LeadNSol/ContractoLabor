@@ -20,6 +20,7 @@ import com.leadn.contractolabor.common_model.StatusResponse;
 import com.leadn.contractolabor.ui.contracts.adapter.AssignWorkerToContractAdapter;
 import com.leadn.contractolabor.ui.workers.model.WorkerResponse;
 import com.leadn.contractolabor.utils.Retrofit.RetrofitHelper;
+import com.leadn.contractolabor.utils.UtilClass;
 import com.leadn.contractolabor.utils.web_apis.ContractServices;
 
 import org.json.JSONException;
@@ -58,6 +59,7 @@ public class AssignWorkersToContractFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private ContractServices mContractServices;
 
+
     private void intiViews() {
         setHasOptionsMenu(true);
         mActivity = (AppCompatActivity) getActivity();
@@ -95,7 +97,8 @@ public class AssignWorkersToContractFragment extends Fragment {
 
     private void assignToContract() {
         JSONObject jsonObject = new JSONObject();
-        if (AssignWorkerToContractAdapter.mSelectedWorkerList.size() > 0) {
+        if (AssignWorkerToContractAdapter.mSelectedWorkerList != null &&
+                AssignWorkerToContractAdapter.mSelectedWorkerList.size() > 0) {
 
             try {
                 jsonObject.put("id", contractSeqId);
@@ -127,7 +130,7 @@ public class AssignWorkersToContractFragment extends Fragment {
     }
 
     private void loadWorkerForAssignment() {
-        mContractServices.getFreeWorkers().enqueue(new Callback<WorkerResponse>() {
+        mContractServices.getFreeWorkers(UtilClass.getCurrentUserId()).enqueue(new Callback<WorkerResponse>() {
             @Override
             public void onResponse(Call<WorkerResponse> call, Response<WorkerResponse> response) {
                 if (response.isSuccessful()) {

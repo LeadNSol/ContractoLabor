@@ -29,7 +29,7 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesAdapter.Expens
     @NonNull
     @Override
     public ExpensesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.single_workers_list_items, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.single_expenses_list_items, parent, false);
         return new ExpensesViewHolder(view);
     }
 

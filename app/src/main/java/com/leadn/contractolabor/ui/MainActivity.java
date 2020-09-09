@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.leadn.contractolabor.R;
 import com.leadn.contractolabor.ui.contracts.ContractFragment;
+import com.leadn.contractolabor.ui.users.UserProfileFragment;
 import com.leadn.contractolabor.ui.workers.WorkersFragment;
 import com.leadn.contractolabor.utils.UtilClass;
 
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         UtilClass.pushFragment(new ContractFragment(), this, R.id.main_frame_layout, true);
         BottomNavigationView navigationView = findViewById(R.id.bottom_navigation);
         navigationView.setOnNavigationItemSelectedListener(this);
-        navigationView.setItemIconTintList(null);
+       // navigationView.setItemIconTintList(null);
     }
 
     /*
@@ -52,14 +53,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         switch (item.getItemId()) {
             case R.id.nav_contract:
                 UtilClass.pushFragment(new ContractFragment(), this, R.id.main_frame_layout, true);
-                //item.setChecked(true);
+               // item.setChecked(true);
                 break;
             case R.id.nav_workers:
                 UtilClass.pushFragment(new WorkersFragment(), this, R.id.main_frame_layout, true);
                 //item.setChecked(true);
                 break;
             case R.id.nav_profile:
-//                UtilClass.pushFragment(new ProfileFragment(), this, R.id.main_frame_layout, true);
+                UtilClass.pushFragment(new UserProfileFragment(), this, R.id.main_frame_layout, true);
+               // item.setChecked(true);
                 break;
         }
         return false;

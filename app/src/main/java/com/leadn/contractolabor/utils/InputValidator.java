@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.leadn.contractolabor.ui.users.model.UserProfileResponse;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -18,7 +19,6 @@ import java.util.regex.Pattern;
 public class InputValidator {
 
     private Context context;
-
     public InputValidator(Context context) {
         this.context = context;
     }
@@ -38,6 +38,7 @@ public class InputValidator {
 
     public boolean isInputEditTextEmail(EditText textInputEditText, TextInputLayout textInputLayout, String message) {
         String value = textInputEditText.getText().toString().trim();
+
         if (value.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(value).matches()) {
             textInputLayout.setError(message);
             hideKeyboardFrom(textInputEditText);

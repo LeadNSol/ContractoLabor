@@ -12,13 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import com.leadn.contractolabor.R;
 import com.leadn.contractolabor.common_model.StatusResponse;
-import com.leadn.contractolabor.ui.credentials.model.UserResponse;
 import com.leadn.contractolabor.ui.workers.model.WorkerResponse;
 import com.leadn.contractolabor.utils.Retrofit.RetrofitHelper;
-import com.leadn.contractolabor.utils.shared_preferences.SharedPreferenceHelper;
+import com.leadn.contractolabor.utils.UtilClass;
 import com.leadn.contractolabor.utils.web_apis.ContractServices;
 
 import java.util.List;
@@ -88,41 +86,32 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
                     .into(imgWorker);
 
             btnPresent.setOnClickListener(view -> {
-                int dayOfWork = Integer.parseInt(worker.getDaysOfWork());
-                dayOfWork += 1;
-
-                markAttendance(dayOfWork, "Present", worker);
-
+                markAttendance("Present", worker);
             });
             btnAbsent.setOnClickListener(view -> {
-                int daysOfAbsence = Integer.parseInt(worker.getDaysOfAbsence());
-                daysOfAbsence += 1;
-                markAttendance(daysOfAbsence, "Absent", worker);
+                markAttendance("Absent", worker);
             });
         }
 
-        private int userId;
 
-        private void markAttendance(int days, String type, WorkerResponse.Worker worker) {
-            int daysOfAbsent = 0, daysOfWork = 0;
+        int daysOfAbsent = 0, daysOfWork = 0;
+        private void markAttendance(String type, WorkerResponse.Worker worker) {
+            daysOfWork = Integer.parseInt(worker.getDaysOfWork());
+            daysOfAbsent = Integer.parseInt(worker.getDaysOfAbsence());
             int present = 0, absent = 0;
             if (type.equalsIgnoreCase("Present")) {
-                daysOfWork = days;
                 present = 1;
+                daysOfWork += 1;
             } else {
-                daysOfAbsent = days;
                 absent = 1;
+                daysOfAbsent += 1;
             }
 
-            if (SharedPreferenceHelper.getHelper().getUserLoggedInData() != null)
-                userId = new Gson()
-                        .fromJson(SharedPreferenceHelper.getHelper().getUserLoggedInData(),
-                                UserResponse.class).getSeqId();
 
             ContractServices contractServices = RetrofitHelper.getInstance().getContractClient();
             contractServices
                     .postAttendance(present, absent, daysOfWork, daysOfAbsent,
-                            worker.getContractId(), userId, worker.getSeqId())
+                            worker.getContractId(), UtilClass.getCurrentUserId(), worker.getSeqId())
                     .enqueue(new Callback<StatusResponse>() {
                         @Override
                         public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {

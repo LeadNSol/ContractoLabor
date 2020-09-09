@@ -4,16 +4,19 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.leadn.contractolabor.R;
 import com.leadn.contractolabor.ui.workers.model.WorkerResponse;
+import com.leadn.contractolabor.utils.AppConstant;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.WorkersViewHolder> {
 
@@ -47,7 +50,7 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.WorkersV
     }
 
     public class WorkersViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imgWorker;
+        private CircleImageView imgWorker;
         private TextView txtWorkerName, txtPhone, txtDayOfWork, txtDailyWage, txtWorkAt, txtWorkerType, txtPaymentStatus;
 
         public WorkersViewHolder(@NonNull View itemView) {
@@ -59,6 +62,7 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.WorkersV
             txtDailyWage = itemView.findViewById(R.id.txt_worker_wage);
             txtWorkAt = itemView.findViewById(R.id.txt_is_free);
             txtWorkerType = itemView.findViewById(R.id.txt_worker_type);
+
             //txtPaymentStatus = itemView.findViewById(R.id.txt_payment_status);
 
 
@@ -71,7 +75,7 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.WorkersV
             txtDayOfWork.setText(worker.getDaysOfWork());
             txtDailyWage.setText(worker.getDailyWage());
             if (worker.getIsFree().equalsIgnoreCase("0"))
-                txtWorkAt.setText(worker.getDaysOfWork());
+                txtWorkAt.setText(worker.getContractName());
             else
                 txtWorkAt.setText(mContext.getResources().getString(R.string.is_free));
 
@@ -79,11 +83,23 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.WorkersV
             itemView.setOnClickListener(view -> {
                 mOnWorkerClickListener.onWorkerClick(worker);
             });
-            //txtWorkerType.setText(worker.getPaymentStatus());
+            //txtPaymentStatus.setText(worker.getPaymentStatus());
+            Glide.with(mContext)
+                    .load(AppConstant.WORKERS_IMAGE_URL.concat(worker.getImageUrl()))
+                    .dontAnimate()
+                    .error(R.drawable.profile)
+                    .into(imgWorker);
+
+            itemView.setOnLongClickListener(view -> {
+                mOnWorkerClickListener.onWorkerLongClick(worker);
+                return false;
+            });
         }
     }
 
     public interface OnWorkerClickListener {
         void onWorkerClick(WorkerResponse.Worker worker);
+
+        void onWorkerLongClick(WorkerResponse.Worker worker);
     }
 }

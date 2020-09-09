@@ -129,4 +129,17 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
         tools:listitem="@layout/single_workers_list_items" />
 
+    <TextView
+        android:id="@+id/txt_no_data_found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_data_is_found"
+        android:textColor="@color/colorPrimary"
+        android:textSize="22sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

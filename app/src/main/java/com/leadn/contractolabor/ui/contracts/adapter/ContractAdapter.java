@@ -1,23 +1,31 @@
 package com.leadn.contractolabor.ui.contracts.adapter;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.leadn.contractolabor.R;
 import com.leadn.contractolabor.common_model.StatusResponse;
 import com.leadn.contractolabor.ui.contracts.model.ContractResponse;
+import com.leadn.contractolabor.ui.contracts.profile.ContractProfileFragment;
+import com.leadn.contractolabor.utils.InputValidator;
 import com.leadn.contractolabor.utils.Retrofit.RetrofitHelper;
+import com.leadn.contractolabor.utils.UtilClass;
 import com.leadn.contractolabor.utils.web_apis.ContractServices;
 
 import java.util.List;
@@ -31,7 +39,7 @@ public class ContractAdapter extends RecyclerView.Adapter<ContractAdapter.Contra
     private List<ContractResponse.Contract> mContractList;
 
     private OnContractClickListener mClickListener;
-    private ContractResponse.Contract contract;
+    private ContractResponse.Contract mContract;
 
     public ContractAdapter(Context mContext, List<ContractResponse.Contract> mContractList, OnContractClickListener mClickListener) {
         this.mContext = mContext;
@@ -51,8 +59,8 @@ public class ContractAdapter extends RecyclerView.Adapter<ContractAdapter.Contra
 
     @Override
     public void onBindViewHolder(@NonNull ContractViewHolder holder, int position) {
-        contract = mContractList.get(position);
-        holder.bind();
+        ContractResponse.Contract contract = mContractList.get(position);
+        holder.bind(contract);
     }
 
     @Override
@@ -61,6 +69,7 @@ public class ContractAdapter extends RecyclerView.Adapter<ContractAdapter.Contra
     }
 
     public class ContractViewHolder extends RecyclerView.ViewHolder {
+        private InputValidator mValidator;
         private TextView txtContractName, txtWorkers, txtAttendance, txtExpenses;
         private ImageView imgContract;
         private ContractServices mContractServices;
@@ -75,10 +84,11 @@ public class ContractAdapter extends RecyclerView.Adapter<ContractAdapter.Contra
 
             imgContract = itemView.findViewById(R.id.img_contract);
             mContractServices = RetrofitHelper.getInstance().getContractClient();
+            mValidator = new InputValidator(mContext);
 
         }
 
-        public void bind() {
+        public void bind(ContractResponse.Contract contract) {
 
             txtContractName.setText(contract.getContractName());
             txtWorkers.setOnClickListener(view -> {
@@ -104,6 +114,7 @@ public class ContractAdapter extends RecyclerView.Adapter<ContractAdapter.Contra
                 menuDetails.setOnMenuItemClickListener(menuItemClickListener);
                 menuEdit.setOnMenuItemClickListener(menuItemClickListener);
                 menuDelete.setOnMenuItemClickListener(menuItemClickListener);
+                mContract = contract;
             });
 
 
@@ -116,10 +127,10 @@ public class ContractAdapter extends RecyclerView.Adapter<ContractAdapter.Contra
                 switch (menuItem.getItemId()) {
                     case 1:
                         Toast.makeText(mContext, "Mark as a completed", Toast.LENGTH_SHORT).show();
-
+                        showCompleteContractDialog();
                         break;
                     case 2:
-                        Toast.makeText(mContext, menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                        UtilClass.pushFragment(new ContractProfileFragment(mContract.getSeqId()), (AppCompatActivity) mContext, R.id.main_frame_layout, true);
                         break;
                     case 3:
                         Toast.makeText(mContext, " Edit clicked", Toast.LENGTH_SHORT).show();
@@ -131,11 +142,55 @@ public class ContractAdapter extends RecyclerView.Adapter<ContractAdapter.Contra
                 return true;
             }
         };
+        private Dialog mContractCompleteDialog;
+
+        private void showCompleteContractDialog() {
+            if (mContractCompleteDialog == null) {
+                mContractCompleteDialog = new Dialog(mContext);
+                mContractCompleteDialog.setCancelable(false);
+
+                mContractCompleteDialog.setContentView(R.layout.dialog_contract_mark_as_complete);
+                EditText etTotalArea;
+                TextInputLayout inputLayoutTotalArea;
+                TextView txtClose, txtChooseEndingDate;
+                Button btnComplete;
+
+                etTotalArea = mContractCompleteDialog.findViewById(R.id.et_total_area);
+                inputLayoutTotalArea = mContractCompleteDialog.findViewById(R.id.text_input_layout_total_area);
+
+                txtChooseEndingDate = mContractCompleteDialog.findViewById(R.id.txt_choose_date);
+                txtChooseEndingDate.setOnClickListener(view -> {
+                    UtilClass.initDatePicker(mContext, txtChooseEndingDate, "current");
+                });
+
+                btnComplete = mContractCompleteDialog.findViewById(R.id.btn_complete_contract);
+                btnComplete.setOnClickListener(view -> {
+                    if (mValidator.isInputEditTextFilled(etTotalArea, inputLayoutTotalArea, "Area is required!")) {
+                        if (!txtChooseEndingDate.getText().toString().equalsIgnoreCase(mContext.getString(R.string.choose_ending_date))) {
+                            double totalBudget = Double.parseDouble(mContract.getSqrFeetPrice()) * Double.parseDouble(etTotalArea.getText().toString());
+
+                        } else {
+                            txtChooseEndingDate.setError("Ending date is required!");
+                        }
+                    }
+                });
+
+                txtClose = mContractCompleteDialog.findViewById(R.id.txt_close);
+                txtClose.setOnClickListener(view -> {
+                    mContractCompleteDialog.dismiss();
+                    mContractCompleteDialog = null;
+                });
+                mContractCompleteDialog.show();
+            } else {
+                mContractCompleteDialog.dismiss();
+                mContractCompleteDialog = null;
+            }
+        }
 
         private void showDeleteContractDialog() {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle("Attention!");
-            builder.setMessage("Do you wants to delete " + contract.getContractName() + " Contract!");
+            builder.setMessage("Do you wants to delete " + mContract.getContractName() + " Contract!");
 
             builder.setPositiveButton("Yes", (dialog, position) -> {
                 deleteContract();
@@ -150,7 +205,7 @@ public class ContractAdapter extends RecyclerView.Adapter<ContractAdapter.Contra
         }
 
         private void deleteContract() {
-            mContractServices.deleteContract(contract.getSeqId())
+            mContractServices.deleteContract(mContract.getSeqId())
                     .enqueue(new Callback<StatusResponse>() {
                         @Override
                         public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
@@ -172,6 +227,7 @@ public class ContractAdapter extends RecyclerView.Adapter<ContractAdapter.Contra
     }
 
     public interface OnContractClickListener {
+
         void onWorkerClick(ContractResponse.Contract contract);
 
         void onExpensesClick(ContractResponse.Contract contract);

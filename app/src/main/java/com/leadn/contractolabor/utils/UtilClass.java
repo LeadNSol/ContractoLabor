@@ -2,12 +2,12 @@ package com.leadn.contractolabor.utils;
 
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -20,7 +20,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.gson.Gson;
 import com.leadn.contractolabor.R;
+import com.leadn.contractolabor.ui.credentials.model.UserResponse;
+import com.leadn.contractolabor.utils.shared_preferences.SharedPreferenceHelper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -92,7 +95,7 @@ public class UtilClass {
     public static Calendar initDatePicker(Context context, TextView textView, String dateType) {
 
         Calendar calendar = Calendar.getInstance();
-        if (dateType.equalsIgnoreCase("end"))
+        if (dateType.equalsIgnoreCase("to"))
             calendar.add(Calendar.DAY_OF_MONTH, 15);
         updateLabel(textView, calendar);
 
@@ -111,7 +114,7 @@ public class UtilClass {
     }
 
     private static void updateLabel(TextView textView, Calendar calendar) {
-        String myFormat = "dd-MM-yyyy"; //In which you need put here
+        String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
         textView.setText(sdf.format(calendar.getTime()));
     }
@@ -130,5 +133,21 @@ public class UtilClass {
             return true;
 
 
+    }
+
+    public static void startCountAnimation(float fromValue, float toValue, TextView textView) {
+        textView.setText(String.valueOf(toValue));
+        ValueAnimator animator = ValueAnimator.ofFloat(fromValue, toValue);
+        animator.setDuration(200);
+        animator.addUpdateListener(animation -> textView.setText(animation.getAnimatedValue().toString()));
+        animator.start();
+    }
+
+    public static String getCurrentUserId() {
+        Integer userId = 0;
+        if (SharedPreferenceHelper.getHelper().getUserLoggedInData() != null) {
+            userId = new Gson().fromJson(SharedPreferenceHelper.getHelper().getUserLoggedInData(), UserResponse.class).getSeqId();
+        }
+        return String.valueOf(userId);
     }
 }

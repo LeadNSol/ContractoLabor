@@ -17,7 +17,8 @@ public interface ExpensesServices {
                                       @Field("expendedAmount") String expendedAmount,
                                       @Field("date") String date,
                                       @Field("paymentStatus") String paymentStatus,
-                                      @Field("userId") int userId);
+                                      @Field("contractId") String contractId,
+                                      @Field("userId") String userId);
 
     @FormUrlEncoded
     @POST("expenses/getContractExpenses.php")

@@ -1,6 +1,8 @@
 package com.leadn.contractolabor.ui.workers;
 
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,18 +20,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.gson.Gson;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.leadn.contractolabor.R;
 import com.leadn.contractolabor.common_model.StatusResponse;
-import com.leadn.contractolabor.ui.credentials.model.UserResponse;
+import com.leadn.contractolabor.ui.contracts.model.ContractResponse;
 import com.leadn.contractolabor.ui.workers.adapters.WorkersAdapter;
 import com.leadn.contractolabor.ui.workers.model.WorkerResponse;
 import com.leadn.contractolabor.utils.InputValidator;
 import com.leadn.contractolabor.utils.Retrofit.RetrofitHelper;
 import com.leadn.contractolabor.utils.UtilClass;
-import com.leadn.contractolabor.utils.shared_preferences.SharedPreferenceHelper;
 import com.leadn.contractolabor.utils.web_apis.WorkerServices;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -65,16 +67,19 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
     private RecyclerView mRvWorkers;
     private InputValidator mInputValidator;
 
+    private TextView txtNotFoundData;
+
     private void initViews() {
         mActivity = (AppCompatActivity) getActivity();
         if (mActivity != null && mActivity.getSupportActionBar() != null) {
             mActivity.getSupportActionBar().setTitle("Workers");
         }
         mInputValidator = new InputValidator(mActivity);
-
+        txtNotFoundData = view.findViewById(R.id.txt_no_data_found);
         mRvWorkers = view.findViewById(R.id.rv_workers);
         mRvWorkers.setLayoutManager(new LinearLayoutManager(mActivity));
         mWorkerService = RetrofitHelper.getInstance().getWorkersClient();
+
 
         getWorkers();
 
@@ -219,12 +224,8 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
         String date = UtilClass.getCurrentDate();
         RequestBody requestBodyDate = RequestBody.create(date, MediaType.parse("multipart/form-data"));
 
-        Integer UserID = 0;
-        if (SharedPreferenceHelper.getHelper().getUserLoggedInData() != null) {
-            UserResponse userResponse = new Gson().fromJson(SharedPreferenceHelper.getHelper().getUserLoggedInData(), UserResponse.class);
-            UserID = userResponse.getSeqId();
-        }
-        RequestBody requestBodyUserId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(UserID));
+
+        RequestBody requestBodyUserId = RequestBody.create(UtilClass.getCurrentUserId(), MediaType.parse("multipart/form-data"));
 
 
         postWorker(requestBodyName,
@@ -273,7 +274,7 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
     private void getWorkers() {
         mOnWorkerClickListener = this;
         mWorkerList = new ArrayList<>();
-        mWorkerService.getWorkers().enqueue(new Callback<WorkerResponse>() {
+        mWorkerService.getWorkers(UtilClass.getCurrentUserId()).enqueue(new Callback<WorkerResponse>() {
             @Override
             public void onResponse(Call<WorkerResponse> call, Response<WorkerResponse> response) {
                 if (response.isSuccessful()) {
@@ -281,10 +282,13 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
                     if (workerResponse != null) {
                         mWorkerList = workerResponse.getWorkersList();
                         if (mWorkerList.size() > 0) {
+                            txtNotFoundData.setVisibility(View.GONE);
                             WorkersAdapter workersAdapter = new WorkersAdapter(mActivity, mWorkerList, mOnWorkerClickListener);
                             mRvWorkers.setAdapter(workersAdapter);
                             workersAdapter.notifyDataSetChanged();
                         } else {
+                            txtNotFoundData.setVisibility(View.VISIBLE);
+                            mRvWorkers.setVisibility(View.GONE);
                             Toast.makeText(mActivity, "no Workers is found!", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -303,23 +307,123 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
         UtilClass.pushFragment(new WorkerProfileFragment(worker), mActivity, R.id.main_frame_layout, true);
     }
 
-   /* private Dialog mProfileDialog;
+    @Override
+    public void onWorkerLongClick(WorkerResponse.Worker worker) {
+        if (worker.getIsFree().equalsIgnoreCase("0"))
+            showShiftWorkerDialog(worker);
+        else{
+            Toast.makeText(mActivity, "Assign worker to any Contract First!", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-    private void showWorkerProfileDialog(WorkerResponse.Worker worker) {
-        if (mProfileDialog == null) {
-            mProfileDialog = new Dialog(mActivity);
-            mProfileDialog.setCancelable(false);
 
-            mProfileDialog.setContentView(R.layout.fragment_assigns_workers_to_contract);
-            if (mProfileDialog.getWindow() != null) {
-                mProfileDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                mProfileDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+    private Dialog mWorkerShiftingDialog;
+
+    private void showShiftWorkerDialog(WorkerResponse.Worker worker) {
+        if (mWorkerShiftingDialog == null) {
+            mWorkerShiftingDialog = new Dialog(mActivity);
+            mWorkerShiftingDialog.setCancelable(false);
+            mWorkerShiftingDialog.setContentView(R.layout.dialog_worker_shifting);
+
+            if (mWorkerShiftingDialog.getWindow() != null) {
+                mWorkerShiftingDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                mWorkerShiftingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             }
 
-            mProfileDialog.show();
+            TextView txtPreviousContract = mWorkerShiftingDialog.findViewById(R.id.txt_previous_contract);
+            txtPreviousContract.setText(worker.getContractName());
+
+            TextView txtClose = mWorkerShiftingDialog.findViewById(R.id.txt_close);
+            txtClose.setOnClickListener(view -> {
+                mWorkerShiftingDialog.dismiss();
+                mWorkerShiftingDialog = null;
+            });
+            MaterialSpinner spContract = mWorkerShiftingDialog.findViewById(R.id.sp_contracts);
+            setContractSpinner(spContract, worker);
+
+            Button btnShiftContract = mWorkerShiftingDialog.findViewById(R.id.btn_shift_worker);
+            btnShiftContract.setOnClickListener(view -> {
+                if (spSelectedName != null) {
+                    shiftWorker(worker);
+
+                }else{
+                    spContract.setError("Contract isn't Selected");
+                }
+
+            });
+            mWorkerShiftingDialog.show();
         } else {
-            mProfileDialog.dismiss();
-            mProfileDialog = null;
+            mWorkerShiftingDialog.dismiss();
+            mWorkerShiftingDialog = null;
         }
-    }*/
+    }
+
+    private void shiftWorker(WorkerResponse.Worker worker) {
+
+        if (mContractList != null && mContractList.size() > 0) {
+            for (ContractResponse.Contract contract : mContractList) {
+                if (spSelectedName.equalsIgnoreCase(contract.getContractName())) {
+                    toContractId = contract.getSeqId();
+                }
+            }
+        }
+
+        mWorkerService.shiftWorker(worker.getContractId(), toContractId, worker.getSeqId(), worker.getDaysOfWork())
+                .enqueue(new Callback<StatusResponse>() {
+                    @Override
+                    public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
+                        if (response.isSuccessful()) {
+                            StatusResponse statusResponse = response.body();
+                            if (statusResponse != null) {
+                                Toast.makeText(mActivity, statusResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                mWorkerShiftingDialog.dismiss();
+                                mWorkerShiftingDialog = null;
+                                getWorkers();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<StatusResponse> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
+    }
+
+    private String spSelectedName, toContractId;
+    private List<ContractResponse.Contract> mContractList;
+
+    private void setContractSpinner(MaterialSpinner spContract, WorkerResponse.Worker worker) {
+        RetrofitHelper.getInstance().getContractClient()
+                .getContracts(UtilClass.getCurrentUserId())
+                .enqueue(new Callback<ContractResponse>() {
+                    @Override
+                    public void onResponse(@NotNull Call<ContractResponse> call, @NotNull Response<ContractResponse> response) {
+                        if (response.isSuccessful()) {
+                            ContractResponse contractResponse = response.body();
+                            if (contractResponse != null) {
+                                mContractList = contractResponse.getContracts();
+                                if (mContractList.size() > 0) {
+                                    List<String> contractNameList = new ArrayList<>();
+                                    for (ContractResponse.Contract contract : mContractList) {
+                                        if (!contract.getSeqId().equals(worker.getContractId()))
+                                            contractNameList.add(contract.getContractName());
+                                    }
+                                    spContract.setItems(contractNameList);
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ContractResponse> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
+
+        spContract.setOnItemSelectedListener((MaterialSpinner.OnItemSelectedListener<String>) (view, position, id, item) -> {
+            spSelectedName = item;
+            //Toast.makeText(mActivity, contract, Toast.LENGTH_SHORT).show();
+        });
+    }
 }

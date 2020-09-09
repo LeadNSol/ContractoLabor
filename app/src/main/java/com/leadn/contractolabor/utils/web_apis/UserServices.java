@@ -2,6 +2,7 @@ package com.leadn.contractolabor.utils.web_apis;
 
 import com.leadn.contractolabor.common_model.StatusResponse;
 import com.leadn.contractolabor.ui.credentials.model.UserResponse;
+import com.leadn.contractolabor.ui.users.model.UserProfileResponse;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -29,4 +30,18 @@ public interface UserServices {
                                        @Part("phone") RequestBody phone,
                                        @Part("password") RequestBody password,
                                        @Part("address") RequestBody address);
+
+    @FormUrlEncoded
+    @POST("user/getUserById.php")
+    Call<UserProfileResponse> getUserById(@Field("userId") String userId);
+
+
+    @Multipart
+    @POST("user/updateUser.php")
+    Call<UserResponse> updateUser(@Part MultipartBody.Part imageFile,
+                                  @Part("name") RequestBody name,
+                                  @Part("address") RequestBody address,
+                                  @Part("userId") RequestBody userId);
+
+
 }

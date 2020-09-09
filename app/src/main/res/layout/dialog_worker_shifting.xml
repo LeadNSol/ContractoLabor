@@ -2,7 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:background="@drawable/style_dialog"
+    android:padding="5dp">
 
     <TextView
         android:id="@+id/textView"
@@ -11,7 +14,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="@string/add_worker_info"
+        android:text="@string/shifting_of_worker"
         android:textColor="@color/colorSmokyBlack"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -27,35 +30,52 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="6dp"
         android:background="@drawable/style_btn"
-        android:drawableStart="@drawable/ic_baseline_close"
         android:padding="5dp"
+        app:drawableStartCompat="@drawable/ic_baseline_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <TextView
+        android:id="@+id/txt_previous_contract"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:padding="12dp"
+        android:text="@string/previous_contract"
+        android:textColor="@color/colorSmokyBlack"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
     <com.jaredrummler.materialspinner.MaterialSpinner
         android:id="@+id/sp_contracts"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/style_btn"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/txt_previous_contract"
         app:ms_arrow_tint="@color/colorPrimaryDark"
-        app:ms_hint="Select Contracts" />
+        app:ms_hint="Select to Contract" />
 
     <Button
-        android:id="@+id/btn_add_contract"
+        android:id="@+id/btn_shift_worker"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
         android:background="@drawable/style_btn"
-        android:text="@string/assign_to_contract"
+        android:text="@string/shift_worker"
         android:textAllCaps="false"
         android:textColor="@color/colorSmokyBlack"
         android:textSize="20sp"

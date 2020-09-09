@@ -21,16 +21,21 @@ import retrofit2.http.Part;
 
 public interface ContractServices {
 
+    @FormUrlEncoded
+    @POST("contracts/getContracts.php")
+    Call<ContractResponse> getContracts(@Field("userId") String userId);
 
-    @GET("contracts/getContracts.php")
-    Call<ContractResponse> getContracts();
+    @FormUrlEncoded
+    @POST("contracts/getContracts.php")
+    Call<ContractResponse> getContractsById(@Field("seqId") String contractId);
 
     @FormUrlEncoded
     @POST("workers/getContractWorkers.php")
     Call<WorkerResponse> getContractWorkers(@Field("contractId") String contractId);
 
-    @GET("workers/getFreeWorkers.php")
-    Call<WorkerResponse> getFreeWorkers();
+    @FormUrlEncoded
+    @POST("workers/getFreeWorkers.php")
+    Call<WorkerResponse> getFreeWorkers(@Field("userId") String userId);
 
     @Multipart
     @POST("contracts/postContract.php")
@@ -61,7 +66,7 @@ public interface ContractServices {
                                         @Field("daysOfWork") int daysOfWork,
                                         @Field("daysOfAbsence") int daysOfAbsence,
                                         @Field("contractId") String contractId,
-                                        @Field("userId") int userId,
+                                        @Field("userId") String userId,
                                         @Field("workerId") String workerId);
 
     @FormUrlEncoded

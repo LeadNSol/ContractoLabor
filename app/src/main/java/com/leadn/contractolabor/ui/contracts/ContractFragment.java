@@ -80,7 +80,7 @@ public class ContractFragment extends Fragment implements ContractAdapter.OnCont
     private void getContracts() {
         mOnContractClickListener = this;
 
-        contractServices.getContracts().enqueue(new Callback<ContractResponse>() {
+        contractServices.getContracts(UtilClass.getCurrentUserId()).enqueue(new Callback<ContractResponse>() {
             @Override
             public void onResponse(Call<ContractResponse> call, Response<ContractResponse> response) {
                 if (response.isSuccessful()) {
@@ -127,7 +127,11 @@ public class ContractFragment extends Fragment implements ContractAdapter.OnCont
             RecyclerView recyclerView = mAssignedWorkerDialog.findViewById(R.id.rv_contract_workers);
             recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
 
-            loadContractWorkers(recyclerView, contract, "assignedWorker");
+            ContractWorkersAdapter workersAdapter = new ContractWorkersAdapter(mActivity, contract.getWorkers());
+            recyclerView.setAdapter(workersAdapter);
+            workersAdapter.notifyDataSetChanged();
+
+
 
             Button btnAssignWorkers = mAssignedWorkerDialog.findViewById(R.id.btn_assign_workers);
             btnAssignWorkers.setOnClickListener(view -> {
@@ -151,43 +155,6 @@ public class ContractFragment extends Fragment implements ContractAdapter.OnCont
         }
 
     }
-
-    private List<WorkerResponse.Worker> mWorkersList;
-
-    private void loadContractWorkers(RecyclerView recyclerView, ContractResponse.Contract contract, String callingType) {
-        mWorkersList = new ArrayList<>();
-        contractServices.getContractWorkers(contract.getSeqId()).enqueue(new Callback<WorkerResponse>() {
-            @Override
-            public void onResponse(Call<WorkerResponse> call, Response<WorkerResponse> response) {
-                if (response.isSuccessful()) {
-                    WorkerResponse workerResponse = response.body();
-                    if (workerResponse != null) {
-                        mWorkersList = workerResponse.getWorkersList();
-                        if (mWorkersList.size() > 0) {
-                            if (callingType.equalsIgnoreCase("WorkerAttendance")) {
-                                AttendanceAdapter attendanceAdapter = new AttendanceAdapter(mActivity, mWorkersList);
-                                recyclerView.setAdapter(attendanceAdapter);
-                                attendanceAdapter.notifyDataSetChanged();
-                            } else {
-                                //recyclerView.removeAllViews();
-                                ContractWorkersAdapter workersAdapter = new ContractWorkersAdapter(mActivity, mWorkersList);
-                                recyclerView.setAdapter(workersAdapter);
-                                workersAdapter.notifyDataSetChanged();
-                            }
-                        } else {
-                            Toast.makeText(mActivity, "No Worker's Assigned yet!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<WorkerResponse> call, Throwable t) {
-
-            }
-        });
-    }
-
 
     @Override
     public void onExpensesClick(ContractResponse.Contract contract) {
@@ -215,7 +182,9 @@ public class ContractFragment extends Fragment implements ContractAdapter.OnCont
             RecyclerView recyclerView = mAttendanceDialog.findViewById(R.id.rv_workers_attendance);
             recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
 
-            loadContractWorkers(recyclerView, contract, "WorkerAttendance");
+            AttendanceAdapter attendanceAdapter = new AttendanceAdapter(mActivity, contract.getWorkers());
+            recyclerView.setAdapter(attendanceAdapter);
+            attendanceAdapter.notifyDataSetChanged();
 
             TextView txtClose = mAttendanceDialog.findViewById(R.id.txt_close);
             txtClose.setOnClickListener(view -> {

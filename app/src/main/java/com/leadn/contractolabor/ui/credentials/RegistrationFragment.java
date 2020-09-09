@@ -31,7 +31,6 @@ import com.leadn.contractolabor.utils.shared_preferences.SharedPreferenceHelper;
 import com.leadn.contractolabor.utils.web_apis.UserServices;
 
 import java.io.File;
-import java.util.Objects;
 
 import gun0912.tedbottompicker.TedBottomPicker;
 import okhttp3.MediaType;
@@ -87,8 +86,6 @@ public class RegistrationFragment extends Fragment {
 
         mValidator = new InputValidator(mActivity);
 
-       /* mStorageRef = FirebaseStorage.getInstance().getReference(AppConstant.CUSTOMER_IMAGES);
-        mFirebaseDatabase = FirebaseDatabase.getInstance();*/
         imgContractor = view.findViewById(R.id.img_contractor);
 
         etName = view.findViewById(R.id.et_name);
@@ -106,7 +103,7 @@ public class RegistrationFragment extends Fragment {
         imgContractor.setOnClickListener(view ->
                 onImageClick());
 
-        if (Objects.equals(txtImgCustomer.getText(), mActivity.getResources().getString(R.string.choose_image))) {
+        if (txtImgCustomer.getText().toString().equalsIgnoreCase(mActivity.getResources().getString(R.string.choose_image))) {
             txtImgCustomer.setOnClickListener(view -> onImageClick());
         }
         btnRegister.setOnClickListener(view -> onRegisterClick());
@@ -168,11 +165,11 @@ public class RegistrationFragment extends Fragment {
             if (imagePath != null) {
                 imageFile = new File(imagePath);
                 if (imageFile.isFile()) {
-                    RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), imageFile);
+                    RequestBody requestBody = RequestBody.create(imageFile, MediaType.parse("*/*"));
                     partFileToUpload = MultipartBody.Part.createFormData("Image", imageFile.getName(), requestBody);
                 }
             } else {
-                RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), "");
+                RequestBody requestBody = RequestBody.create("", MediaType.parse("*/*"));
                 partFileToUpload = MultipartBody.Part.createFormData("Image", "", requestBody);
             }
 

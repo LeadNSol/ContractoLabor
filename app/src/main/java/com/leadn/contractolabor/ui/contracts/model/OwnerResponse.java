@@ -1,11 +1,8 @@
 package com.leadn.contractolabor.ui.contracts.model;
 
-import android.telecom.Call;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.security.acl.Owner;
 import java.util.List;
 
 public class OwnerResponse {
@@ -17,7 +14,7 @@ public class OwnerResponse {
         return contractOwnerList;
     }
 
-    public static class ContractOwner{
+    public static class ContractOwner {
         @SerializedName("seq_id")
         @Expose
         private String seqId;
@@ -30,6 +27,9 @@ public class OwnerResponse {
         @SerializedName("address")
         @Expose
         private String address;
+        @SerializedName("contract_id")
+        @Expose
+        private String contractId;
 
         public String getSeqId() {
             return seqId;
@@ -45,6 +45,10 @@ public class OwnerResponse {
 
         public String getAddress() {
             return address;
+        }
+
+        public String getContractId() {
+            return contractId;
         }
     }
 }

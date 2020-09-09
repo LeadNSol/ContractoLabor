@@ -2,24 +2,25 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.leadn.contractolabor">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".utils.AppContextHelper"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".utils.AppContextHelper"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name=".ui.credentials.LoginActivity"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".ui.SplashActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-            android:configChanges="orientation|screenSize|uiMode"
-            android:label="@string/app_name">
+            android:configChanges="orientation|screenSize|uiMode">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +28,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MainActivity"/>
+            android:name=".ui.credentials.LoginActivity"
+            android:configChanges="orientation|screenSize|uiMode"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+
+        </activity>
+        <activity android:name=".ui.MainActivity" android:configChanges="orientation|screenSize|uiMode"/>
     </application>
 
 </manifest>

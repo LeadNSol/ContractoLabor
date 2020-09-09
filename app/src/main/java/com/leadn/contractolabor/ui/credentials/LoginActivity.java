@@ -35,13 +35,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        /*mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         if (mAuth.getCurrentUser() == null)
             createSignInIntent();
         else
-            navigateFragment(mAuth.getCurrentUser().getPhoneNumber());*/
-        navigateFragment("03025580842");
+            navigateFragment(mAuth.getCurrentUser().getPhoneNumber());
+        //navigateFragment("03025580842");
 
     }
 

@@ -2,6 +2,7 @@ package com.leadn.contractolabor.ui.contracts.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.leadn.contractolabor.ui.workers.model.WorkerResponse;
 
 import java.util.List;
 
@@ -24,6 +25,15 @@ public class ContractResponse {
         @SerializedName("sqrFeetPrice")
         @Expose
         private String sqrFeetPrice;
+        @SerializedName("totalArea")
+        @Expose
+        private String totalArea;
+        @SerializedName("totalBudget")
+        @Expose
+        private String totalBudget;
+        @SerializedName("expenses")
+        @Expose
+        private String expenses;
         @SerializedName("location")
         @Expose
         private String location;
@@ -36,15 +46,15 @@ public class ContractResponse {
         @SerializedName("image")
         @Expose
         private String image;
-        @SerializedName("ownerId")
-        @Expose
-        private String ownerId;
         @SerializedName("userId")
         @Expose
         private String userId;
         @SerializedName("workers")
         @Expose
-        private List<Worker> workers = null;
+        private List<WorkerResponse.Worker> workers = null;
+        @SerializedName("owner")
+        @Expose
+        private List<OwnerResponse.ContractOwner> owner = null;
 
         public Contract(String seqId, String contractName) {
             this.seqId = seqId;
@@ -79,77 +89,30 @@ public class ContractResponse {
             return image;
         }
 
-        public String getOwnerId() {
-            return ownerId;
+        public String getTotalArea() {
+            return totalArea;
+        }
+
+        public String getTotalBudget() {
+            return totalBudget;
+        }
+
+        public String getExpenses() {
+            return expenses;
+        }
+
+        public List<OwnerResponse.ContractOwner> getOwner() {
+            return owner;
         }
 
         public String getUserId() {
             return userId;
         }
 
-        public List<Worker> getWorkers() {
+        public List<WorkerResponse.Worker> getWorkers() {
             return workers;
         }
     }
 
-    public class Worker {
-
-        @SerializedName("seq_id")
-        @Expose
-        private String seqId;
-        @SerializedName("name")
-        @Expose
-        private String name;
-        @SerializedName("type")
-        @Expose
-        private String type;
-        @SerializedName("phone")
-        @Expose
-        private String phone;
-        @SerializedName("address")
-        @Expose
-        private String address;
-        @SerializedName("daily_wage")
-        @Expose
-        private String dailyWage;
-        @SerializedName("isActive")
-        @Expose
-        private String isActive;
-        @SerializedName("isFree")
-        @Expose
-        private String isFree;
-
-        public String getSeqId() {
-            return seqId;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public String getPhone() {
-            return phone;
-        }
-
-        public String getAddress() {
-            return address;
-        }
-
-        public String getDailyWage() {
-            return dailyWage;
-        }
-
-        public String getIsActive() {
-            return isActive;
-        }
-
-        public String getIsFree() {
-            return isFree;
-        }
-    }
 
 }

@@ -140,7 +140,7 @@ public class NewContractFragment extends Fragment {
 
             @Override
             public void onFailure(Call<OwnerResponse> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
         spOwners.setOnItemSelectedListener((MaterialSpinner.OnItemSelectedListener<String>) (view, position, id, item) -> {
@@ -162,11 +162,10 @@ public class NewContractFragment extends Fragment {
 
             int width = (int) (mActivity.getResources().getDisplayMetrics().widthPixels * 0.8);
             int height = (int) (mActivity.getResources().getDisplayMetrics().heightPixels * 0.8);
-            //if (mAddOwnerDialog.getWindow() != null)
-            mAddOwnerDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            mAddOwnerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
+            if (mAddOwnerDialog.getWindow() != null) {
+                mAddOwnerDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                mAddOwnerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
 
             EditText etName, etPhone, etAddress;
             TextInputLayout nameInputLayout, phoneInputLayout, addressInputLayout;
@@ -273,12 +272,8 @@ public class NewContractFragment extends Fragment {
             }
         }
         RequestBody requestBodyDate = RequestBody.create(txtStartingDate.getText().toString(), MediaType.parse("multipart/form-data"));
-        Integer UserID = 0;
-        if (SharedPreferenceHelper.getHelper().getUserLoggedInData() != null) {
-            UserResponse userResponse = new Gson().fromJson(SharedPreferenceHelper.getHelper().getUserLoggedInData(), UserResponse.class);
-            UserID = userResponse.getSeqId();
-        }
-        RequestBody requestBodyUserId = RequestBody.create(String.valueOf(UserID), MediaType.parse("multipart/form-data"));
+
+        RequestBody requestBodyUserId = RequestBody.create(UtilClass.getCurrentUserId(), MediaType.parse("multipart/form-data"));
 
         postNewContract(
                 requestBodyName,
