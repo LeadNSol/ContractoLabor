@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.leadn.contractolabor.R;
@@ -25,7 +24,6 @@ import com.leadn.contractolabor.ui.credentials.model.UserResponse;
 import com.leadn.contractolabor.utils.AppConstant;
 import com.leadn.contractolabor.utils.InputValidator;
 import com.leadn.contractolabor.utils.Retrofit.RetrofitHelper;
-import com.leadn.contractolabor.utils.UtilClass;
 import com.leadn.contractolabor.utils.shared_preferences.SharedPreferenceHelper;
 import com.leadn.contractolabor.utils.web_apis.UserServices;
 
@@ -33,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-import gun0912.tedbottompicker.TedBottomPicker;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -59,7 +56,8 @@ public class UpdateUserFragment extends Fragment {
     }
 
     private ImageView imgContractor;
-    private EditText etName, etPassword, etAddress;
+    private EditText etName;
+    private EditText etAddress;
     private TextInputLayout nameInputLayout, addressInputLayout;
 
     private void initViews() {
@@ -73,7 +71,7 @@ public class UpdateUserFragment extends Fragment {
         imgContractor = view.findViewById(R.id.img_contractor);
 
         etName = view.findViewById(R.id.et_name);
-        etPassword = view.findViewById(R.id.et_password);
+        EditText etPassword = view.findViewById(R.id.et_password);
         etPassword.setVisibility(View.GONE);
 
         etAddress = view.findViewById(R.id.et_address);
@@ -92,9 +90,7 @@ public class UpdateUserFragment extends Fragment {
             txtImgCustomer.setOnClickListener(view -> onImageClick());
         }
         //btnRegister.setOnClickListener(view -> onRegisterClick());
-        btnUpdate.setOnClickListener(view -> {
-            onUpdate();
-        });
+        btnUpdate.setOnClickListener(view -> onUpdate());
 
         loadProfileData();
 
@@ -140,7 +136,7 @@ public class UpdateUserFragment extends Fragment {
 
             mUserServices
                     .updateUser(partFileToUpload, name, address, userId)
-                    .enqueue(new Callback<UserResponse>() {
+                    .enqueue(new Callback<>() {
                         @Override
                         public void onResponse(@NotNull Call<UserResponse> call, @NotNull Response<UserResponse> response) {
                             if (response.isSuccessful()) {
@@ -152,6 +148,7 @@ public class UpdateUserFragment extends Fragment {
                                 }
                             }
                         }
+
                         @Override
                         public void onFailure(@NotNull Call<UserResponse> call, @NotNull Throwable t) {
                             t.printStackTrace();
@@ -164,24 +161,24 @@ public class UpdateUserFragment extends Fragment {
     private String imagePath;
     private Uri imageUri;
     private void onImageClick() {
-        if (UtilClass.checkImagePermissions(mActivity)) {
-            try {
-                TedBottomPicker.with(mActivity)
-                        .showTitle(true)
-                        .setCompleteButtonText("Done")
-                        .setEmptySelectionText("No Select")
-                        .show(uri -> {
-                            imagePath = uri.getPath();
-                            imageUri = uri;
-                            Glide.with(mActivity)
-                                    .load(imagePath)
-                                    .apply(RequestOptions.circleCropTransform())
-                                    .into(imgContractor);
-                        });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else
-            Toast.makeText(mActivity, "permission not allowed", Toast.LENGTH_SHORT).show();
+//        if (UtilClass.checkImagePermissions(mActivity)) {
+//            try {
+//                TedBottomPicker.with(mActivity)
+//                        .showTitle(true)
+//                        .setCompleteButtonText("Done")
+//                        .setEmptySelectionText("No Select")
+//                        .show(uri -> {
+//                            imagePath = uri.getPath();
+//                            imageUri = uri;
+//                            Glide.with(mActivity)
+//                                    .load(imagePath)
+//                                    .apply(RequestOptions.circleCropTransform())
+//                                    .into(imgContractor);
+//                        });
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        } else
+        Toast.makeText(mActivity, "permission not allowed", Toast.LENGTH_SHORT).show();
     }
 }
