@@ -69,7 +69,7 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
             checkLoggedIn();
 
         } else {
-            EasyPermissions.requestPermissions(this, "Permissions are needed", RC_VIDEO_APP_PERM, perms);
+                EasyPermissions.requestPermissions(this, "Permissions are needed", RC_VIDEO_APP_PERM, perms);
         }
     }
 

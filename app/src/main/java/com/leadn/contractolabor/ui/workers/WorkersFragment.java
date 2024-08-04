@@ -1,9 +1,11 @@
 package com.leadn.contractolabor.ui.workers;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,8 +39,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import gun0912.tedbottompicker.TedBottomPicker;
+
+import gun0912.tedimagepicker.builder.TedImagePicker;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -47,6 +52,8 @@ import retrofit2.Response;
 
 
 public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorkerClickListener {
+
+    private static final String TAG = "WorkFragment";
 
     public WorkersFragment() {
         // Required empty public constructor
@@ -84,9 +91,7 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
         getWorkers();
 
         Button btnAddWorker = view.findViewById(R.id.btn_add_new_worker);
-        btnAddWorker.setOnClickListener(view -> {
-            showAddNewWorkerDialog();
-        });
+        btnAddWorker.setOnClickListener(view -> showAddNewWorkerDialog());
 
     }
 
@@ -100,7 +105,7 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
 
             int width = (int) (mActivity.getResources().getDisplayMetrics().widthPixels * 0.95);
             int height = (int) (mActivity.getResources().getDisplayMetrics().heightPixels * 0.9);
-            mAddWorkerDialog.getWindow().setLayout(width, height);
+            Objects.requireNonNull(mAddWorkerDialog.getWindow()).setLayout(width, height);
 
 
             TextInputLayout textInputLayoutName, textInputLayoutPhone, textInputLayoutWage, textInputLayoutAddress;
@@ -120,16 +125,14 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
             textInputLayoutWage = mAddWorkerDialog.findViewById(R.id.text_input_layout_wage);
 
             imgWorker = mAddWorkerDialog.findViewById(R.id.img_worker);
-            imgWorker.setOnClickListener(view -> {
-                onImageClick(imgWorker);
-            });
+            imgWorker.setOnClickListener(view -> onImageClick(imgWorker));
 
             spType = mAddWorkerDialog.findViewById(R.id.sp_worker_type);
             /*spType.setItems("Mason", "Labor");
             spType.setOnItemSelectedListener((MaterialSpinner.OnItemSelectedListener<String>) (view, position, id, item) -> {
                 selectedType = item;
             })*/
-            ;
+
             setSpinner(spType);
 
 
@@ -172,11 +175,11 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
     private void onImageClick(ImageView imgWorker) {
         if (UtilClass.checkImagePermissions(mActivity)) {
             try {
-                TedBottomPicker.with(mActivity)
+                TedImagePicker.with(mActivity)
                         .showTitle(true)
-                        .setCompleteButtonText("Done")
-                        .setEmptySelectionText("No Select")
-                        .show(uri -> {
+                        //.setCompleteButtonText("Done")
+                        //.setEmptySelectionText("No Select")
+                        .start(uri -> {
                             imagePath = uri.getPath();
                             Glide.with(mActivity)
                                     .load(uri)
@@ -184,7 +187,7 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
                                     .into(imgWorker);
                         });
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "onImageClick: ",e );
             }
         } else
             Toast.makeText(mActivity, "permission not allowed", Toast.LENGTH_SHORT).show();
@@ -196,9 +199,7 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
     private void setSpinner(MaterialSpinner spType) {
 
         spType.setItems("Mason", "Labor");
-        spType.setOnItemSelectedListener((MaterialSpinner.OnItemSelectedListener<String>) (view, position, id, item) -> {
-            selectedType = item;
-        });
+        spType.setOnItemSelectedListener((MaterialSpinner.OnItemSelectedListener<String>) (view, position, id, item) -> selectedType = item);
     }
 
     private MultipartBody.Part fileTOUpload;
@@ -245,9 +246,9 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
 //, RequestBody userId
 
         mWorkerService.postWorker(fileTOUpload, name, type, phone, wage, address, date, userId)
-                .enqueue(new Callback<StatusResponse>() {
+                .enqueue(new Callback<>() {
                     @Override
-                    public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
+                    public void onResponse(@NonNull Call<StatusResponse> call, @NonNull Response<StatusResponse> response) {
                         if (response.isSuccessful()) {
                             StatusResponse statusResponse = response.body();
                             if (statusResponse != null) {
@@ -260,8 +261,8 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
                     }
 
                     @Override
-                    public void onFailure(Call<StatusResponse> call, Throwable t) {
-                        t.printStackTrace();
+                    public void onFailure(@NonNull Call<StatusResponse> call, @NonNull Throwable t) {
+                        Log.e(TAG, "PostWorker: ",t);
                     }
                 });
 
@@ -274,14 +275,15 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
     private void getWorkers() {
         mOnWorkerClickListener = this;
         mWorkerList = new ArrayList<>();
-        mWorkerService.getWorkers(UtilClass.getCurrentUserId()).enqueue(new Callback<WorkerResponse>() {
+        mWorkerService.getWorkers(UtilClass.getCurrentUserId()).enqueue(new Callback<>() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onResponse(Call<WorkerResponse> call, Response<WorkerResponse> response) {
+            public void onResponse(@NonNull Call<WorkerResponse> call, @NonNull Response<WorkerResponse> response) {
                 if (response.isSuccessful()) {
                     WorkerResponse workerResponse = response.body();
                     if (workerResponse != null) {
                         mWorkerList = workerResponse.getWorkersList();
-                        if (mWorkerList.size() > 0) {
+                        if (!mWorkerList.isEmpty()) {
                             txtNotFoundData.setVisibility(View.GONE);
                             WorkersAdapter workersAdapter = new WorkersAdapter(mActivity, mWorkerList, mOnWorkerClickListener);
                             mRvWorkers.setAdapter(workersAdapter);
@@ -296,8 +298,8 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
             }
 
             @Override
-            public void onFailure(Call<WorkerResponse> call, Throwable t) {
-                t.printStackTrace();
+            public void onFailure(@NonNull Call<WorkerResponse> call, @NonNull Throwable t) {
+                Log.e(TAG, "getWorkers: ",t );
             }
         });
     }
@@ -360,7 +362,7 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
 
     private void shiftWorker(WorkerResponse.Worker worker) {
 
-        if (mContractList != null && mContractList.size() > 0) {
+        if (mContractList != null && !mContractList.isEmpty()) {
             for (ContractResponse.Contract contract : mContractList) {
                 if (spSelectedName.equalsIgnoreCase(contract.getContractName())) {
                     toContractId = contract.getSeqId();
@@ -369,9 +371,9 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
         }
 
         mWorkerService.shiftWorker(worker.getContractId(), toContractId, worker.getSeqId(), worker.getDaysOfWork())
-                .enqueue(new Callback<StatusResponse>() {
+                .enqueue(new Callback<>() {
                     @Override
-                    public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
+                    public void onResponse(@NonNull Call<StatusResponse> call, @NonNull Response<StatusResponse> response) {
                         if (response.isSuccessful()) {
                             StatusResponse statusResponse = response.body();
                             if (statusResponse != null) {
@@ -384,8 +386,8 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
                     }
 
                     @Override
-                    public void onFailure(Call<StatusResponse> call, Throwable t) {
-                        t.printStackTrace();
+                    public void onFailure(@NonNull Call<StatusResponse> call, @NonNull Throwable t) {
+                        Log.e(TAG, "Shift Worker: ",t );
                     }
                 });
     }
@@ -396,14 +398,14 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
     private void setContractSpinner(MaterialSpinner spContract, WorkerResponse.Worker worker) {
         RetrofitHelper.getInstance().getContractClient()
                 .getContracts(UtilClass.getCurrentUserId())
-                .enqueue(new Callback<ContractResponse>() {
+                .enqueue(new Callback<>() {
                     @Override
                     public void onResponse(@NotNull Call<ContractResponse> call, @NotNull Response<ContractResponse> response) {
                         if (response.isSuccessful()) {
                             ContractResponse contractResponse = response.body();
                             if (contractResponse != null) {
                                 mContractList = contractResponse.getContracts();
-                                if (mContractList.size() > 0) {
+                                if (!mContractList.isEmpty()) {
                                     List<String> contractNameList = new ArrayList<>();
                                     for (ContractResponse.Contract contract : mContractList) {
                                         if (!contract.getSeqId().equals(worker.getContractId()))
@@ -416,8 +418,8 @@ public class WorkersFragment extends Fragment implements WorkersAdapter.OnWorker
                     }
 
                     @Override
-                    public void onFailure(Call<ContractResponse> call, Throwable t) {
-                        t.printStackTrace();
+                    public void onFailure(@NonNull Call<ContractResponse> call, @NonNull Throwable t) {
+                        Log.e(TAG, "SetContract: ",t);
                     }
                 });
 

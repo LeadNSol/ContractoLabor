@@ -54,7 +54,7 @@
                     android:layout_height="130dp"
                     android:layout_gravity="center"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_camera"
+                    android:src="@drawable/ic_baseline_camera"
                     app:tint="@color/colorPrimaryDark" />
 
                 <TextView

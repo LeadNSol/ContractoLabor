@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -35,7 +36,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import gun0912.tedbottompicker.TedBottomPicker;
+
+import gun0912.tedimagepicker.builder.TedImagePicker;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -202,9 +204,9 @@ public class NewContractFragment extends Fragment {
 
     private void addOwner(String name, String phone, String address) {
         mContractService.postOwner(name, phone, address)
-                .enqueue(new Callback<StatusResponse>() {
+                .enqueue(new Callback<>() {
                     @Override
-                    public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
+                    public void onResponse(@NonNull Call<StatusResponse> call, @NonNull Response<StatusResponse> response) {
                         if (response.isSuccessful()) {
                             StatusResponse statusResponse = response.body();
                             if (statusResponse != null)
@@ -220,7 +222,7 @@ public class NewContractFragment extends Fragment {
                     }
 
                     @Override
-                    public void onFailure(Call<StatusResponse> call, Throwable t) {
+                    public void onFailure(@NonNull Call<StatusResponse> call, @NonNull Throwable t) {
 
                     }
                 });
@@ -231,11 +233,11 @@ public class NewContractFragment extends Fragment {
     private void onImageClick(ImageView imgWorker) {
         if (UtilClass.checkImagePermissions(mActivity)) {
             try {
-                TedBottomPicker.with(mActivity)
+                TedImagePicker.with(mActivity)
                         .showTitle(true)
-                        .setCompleteButtonText("Done")
-                        .setEmptySelectionText("No Select")
-                        .show(uri -> {
+                        //.setCompleteButtonText("Done")
+                        //.setEmptySelectionText("No Select")
+                        .start(uri -> {
                             imagePath = uri.getPath();
                             Glide.with(mActivity)
                                     .load(uri)
@@ -291,7 +293,7 @@ public class NewContractFragment extends Fragment {
         mContractService.postContract(fileTOUpload, name, sqFeetPrice, address, date, ownerId, userId)
                 .enqueue(new Callback<StatusResponse>() {
                     @Override
-                    public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
+                    public void onResponse(@NonNull Call<StatusResponse> call, @NonNull Response<StatusResponse> response) {
                         if (response.isSuccessful()) {
                             StatusResponse statusResponse = response.body();
                             if (statusResponse != null) {
@@ -301,7 +303,7 @@ public class NewContractFragment extends Fragment {
                     }
 
                     @Override
-                    public void onFailure(Call<StatusResponse> call, Throwable t) {
+                    public void onFailure(@NonNull Call<StatusResponse> call, @NonNull Throwable t) {
                         t.printStackTrace();
                     }
                 });

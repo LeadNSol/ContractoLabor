@@ -3,8 +3,8 @@ package com.leadn.contractolabor.ui.credentials;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -32,7 +33,7 @@ import com.leadn.contractolabor.utils.web_apis.UserServices;
 
 import java.io.File;
 
-import gun0912.tedbottompicker.TedBottomPicker;
+import gun0912.tedimagepicker.builder.TedImagePicker;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -43,17 +44,11 @@ import retrofit2.Response;
 
 public class RegistrationFragment extends Fragment {
 
+    private static final String TAG = "RegistrationFragment";
     private InputValidator mValidator;
 
     public RegistrationFragment() {
         // Required empty public constructor
-    }
-
-
-    public static RegistrationFragment newInstance(String param1, String param2) {
-        RegistrationFragment fragment = new RegistrationFragment();
-
-        return fragment;
     }
 
     @Override
@@ -113,25 +108,25 @@ public class RegistrationFragment extends Fragment {
 
 
     private String imagePath;
-    private Uri imageUri;
+    //private Uri imageUri;
 
     private void onImageClick() {
         if (checkCameraPermissions()) {
             try {
-                TedBottomPicker.with(mActivity)
+                TedImagePicker.with(mActivity)
                         .showTitle(true)
-                        .setCompleteButtonText("Done")
-                        .setEmptySelectionText("No Select")
-                        .show(uri -> {
+                        //.setCompleteButtonText("Done")
+                        //.setEmptySelectionText("No Select")
+                        .start(uri -> {
                             imagePath = uri.getPath();
-                            imageUri = uri;
+                            // imageUri = uri;
                             Glide.with(mActivity)
                                     .load(imagePath)
                                     .apply(RequestOptions.circleCropTransform())
                                     .into(imgContractor);
                         });
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "onImageClick: ", e);
             }
         } else
             Toast.makeText(mActivity, "permission not allowed", Toast.LENGTH_SHORT).show();
@@ -153,7 +148,6 @@ public class RegistrationFragment extends Fragment {
 
     }
 
-    private File imageFile;
     private MultipartBody.Part partFileToUpload;
     private String phoneNumber;
 
@@ -163,7 +157,7 @@ public class RegistrationFragment extends Fragment {
                 && mValidator.isInputEditTextFilled(etAddress, addressInputLayout, "Address is Required")) {
 
             if (imagePath != null) {
-                imageFile = new File(imagePath);
+                File imageFile = new File(imagePath);
                 if (imageFile.isFile()) {
                     RequestBody requestBody = RequestBody.create(imageFile, MediaType.parse("*/*"));
                     partFileToUpload = MultipartBody.Part.createFormData("Image", imageFile.getName(), requestBody);
@@ -176,12 +170,11 @@ public class RegistrationFragment extends Fragment {
 
             if (SharedPreferenceHelper.getHelper().getPhoneNumber() != null)
                 phoneNumber = SharedPreferenceHelper.getHelper().getPhoneNumber();
-
-            RequestBody requestBodyName = RequestBody.create(MediaType.parse("multipart/form-data"), etName.getText().toString().trim());
-            RequestBody requestBodyPhone = RequestBody.create(MediaType.parse("multipart/form-data"), phoneNumber);
-            RequestBody requestBodyAddress = RequestBody.create(MediaType.parse("multipart/form-data"), etAddress.getText().toString().trim());
-            RequestBody requestBodyPassword = RequestBody.create(MediaType.parse("multipart/form-data"), etPassword.getText().toString().trim());
-
+            MediaType mediaType = MediaType.get("multipart/form-data");
+            RequestBody requestBodyName = RequestBody.create(etName.getText().toString().trim(), mediaType);
+            RequestBody requestBodyPhone = RequestBody.create(phoneNumber, mediaType);
+            RequestBody requestBodyAddress = RequestBody.create(etAddress.getText().toString().trim(), mediaType);
+            RequestBody requestBodyPassword = RequestBody.create(etPassword.getText().toString().trim(), mediaType);
 
             registerUser(requestBodyName, requestBodyPhone, requestBodyPassword, requestBodyAddress);
 
@@ -194,9 +187,9 @@ public class RegistrationFragment extends Fragment {
 
         UserServices userServices = RetrofitHelper.getInstance().getUserClient();
         userServices.registerNewUser(partFileToUpload, name, phone, password, address)
-                .enqueue(new Callback<UserResponse>() {
+                .enqueue(new Callback<>() {
                     @Override
-                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                    public void onResponse(@NonNull Call<UserResponse> call, @NonNull Response<UserResponse> response) {
                         if (response.isSuccessful()) {
                             UserResponse userResponse = response.body();
                             if (userResponse != null) {
@@ -214,8 +207,8 @@ public class RegistrationFragment extends Fragment {
                     }
 
                     @Override
-                    public void onFailure(Call<UserResponse> call, Throwable t) {
-                        t.printStackTrace();
+                    public void onFailure(@NonNull Call<UserResponse> call, @NonNull Throwable t) {
+                        Log.e(TAG, "onFailure: ", t);
                     }
                 });
 

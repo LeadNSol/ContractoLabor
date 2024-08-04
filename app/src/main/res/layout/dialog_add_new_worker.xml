@@ -28,7 +28,7 @@
         android:layout_marginEnd="6dp"
         android:background="@drawable/style_btn"
         android:padding="5dp"
-        android:drawableStart="@drawable/ic_baseline_close"
+        app:drawableStartCompat="@drawable/ic_baseline_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="parent" />
@@ -63,9 +63,10 @@
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_gravity="center"
+                android:contentDescription="@string/camera"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_camera"
-                android:tint="@color/colorPrimaryDark" />
+                android:src="@drawable/ic_baseline_camera"
+                app:tint="@color/colorPrimaryDark" />
 
             <TextView
                 android:id="@+id/txt_choose_image"
@@ -88,6 +89,7 @@
                     android:id="@+id/et_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints=""
                     android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                     android:drawablePadding="15dp"
                     android:hint="@string/name"
@@ -106,6 +108,7 @@
                     android:id="@+id/et_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints=""
                     android:drawablePadding="15dp"
                     android:hint="@string/fui_phone_hint"
                     android:inputType="phone" />
@@ -122,6 +125,7 @@
                     android:id="@+id/et_daily_wage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints=""
                     android:drawablePadding="15dp"
                     android:hint="@string/wage"
                     android:inputType="text" />
@@ -138,6 +142,7 @@
                     android:id="@+id/et_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints=""
                     android:drawablePadding="15dp"
                     android:hint="@string/address"
                     android:inputType="text" />
