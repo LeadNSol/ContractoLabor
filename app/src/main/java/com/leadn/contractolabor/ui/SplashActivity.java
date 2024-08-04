@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.FirebaseApp;
 import com.leadn.contractolabor.R;
 import com.leadn.contractolabor.ui.credentials.LoginActivity;
 
@@ -35,6 +36,8 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        FirebaseApp.initializeApp(this);
+
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
@@ -57,12 +60,12 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
 
     private void requestPermissions() {
         String[] perms = {
-                Manifest.permission.INTERNET,
-                Manifest.permission.ACCESS_NETWORK_STATE,
-                Manifest.permission.ACCESS_WIFI_STATE,
+//                Manifest.permission.INTERNET,
+//                Manifest.permission.ACCESS_NETWORK_STATE,
+//                Manifest.permission.ACCESS_WIFI_STATE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA
+                //Manifest.permission.CAMERA
         };
         if (EasyPermissions.hasPermissions(this, perms)) {
             //connectMethod();

@@ -5,6 +5,7 @@ public class AppConstant {
     public static final String CUSTOMER_IMAGES = "CustomerImages";
 
     public static final String CUSTOMERS = "Customers";
+    public static final String USERS = "Users";
     public static final String STORES = "Stores";
     public static final String STORES_AD = "StoresAd";
     public static final String STORES_AD_IMAGES = "StoresAdImages";

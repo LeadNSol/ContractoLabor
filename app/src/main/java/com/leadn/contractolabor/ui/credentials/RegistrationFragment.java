@@ -3,6 +3,7 @@ package com.leadn.contractolabor.ui.credentials;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +22,12 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.leadn.contractolabor.R;
 import com.leadn.contractolabor.ui.MainActivity;
@@ -32,6 +38,8 @@ import com.leadn.contractolabor.utils.shared_preferences.SharedPreferenceHelper;
 import com.leadn.contractolabor.utils.web_apis.UserServices;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import gun0912.tedimagepicker.builder.TedImagePicker;
 import okhttp3.MediaType;
@@ -150,40 +158,66 @@ public class RegistrationFragment extends Fragment {
 
     private MultipartBody.Part partFileToUpload;
     private String phoneNumber;
+    private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
 
     private void onRegisterClick() {
         if (mValidator.isInputEditTextFilled(etName, nameInputLayout, "Name is Required")
                 && mValidator.isInputEditTextFilled(etPassword, passwordInputLayout, "Password is Required")
                 && mValidator.isInputEditTextFilled(etAddress, addressInputLayout, "Address is Required")) {
 
-            if (imagePath != null) {
-                File imageFile = new File(imagePath);
-                if (imageFile.isFile()) {
-                    RequestBody requestBody = RequestBody.create(imageFile, MediaType.parse("*/*"));
-                    partFileToUpload = MultipartBody.Part.createFormData("Image", imageFile.getName(), requestBody);
+//            if (imagePath != null) {
+//                File imageFile = new File(imagePath);
+//                if (imageFile.isFile()) {
+//                    RequestBody requestBody = RequestBody.create(imageFile, MediaType.parse("*/*"));
+//                    partFileToUpload = MultipartBody.Part.createFormData("Image", imageFile.getName(), requestBody);
+//                }
+//            } else {
+//                RequestBody requestBody = RequestBody.create("", MediaType.parse("*/*"));
+//                partFileToUpload = MultipartBody.Part.createFormData("Image", "", requestBody);
+//            }
+
+
+            if (SharedPreferenceHelper.getHelper().getPhoneNumber() != null) {
+                phoneNumber = SharedPreferenceHelper.getHelper().getPhoneNumber();
+
+                Map<String, Object> newUserMap = new HashMap<>();
+
+                ////creation of firebase
+
+                if(imagePath!=null){
+                    File imageFile = new File(imagePath);
+                    Uri uri = Uri.fromFile(imageFile);
+                    StorageReference imageRef =  firebaseStorage.getReference().child("profileImages/"+uri.getLastPathSegment());
+                    UploadTask uploadTask = imageRef.putFile(uri);
+                    uploadTask.addOnFailureListener(exception -> {
+
+                    }).addOnSuccessListener(taskSnapshot -> {
+
+                    });
                 }
-            } else {
-                RequestBody requestBody = RequestBody.create("", MediaType.parse("*/*"));
-                partFileToUpload = MultipartBody.Part.createFormData("Image", "", requestBody);
             }
 
 
-            if (SharedPreferenceHelper.getHelper().getPhoneNumber() != null)
-                phoneNumber = SharedPreferenceHelper.getHelper().getPhoneNumber();
-            MediaType mediaType = MediaType.get("multipart/form-data");
-            RequestBody requestBodyName = RequestBody.create(etName.getText().toString().trim(), mediaType);
-            RequestBody requestBodyPhone = RequestBody.create(phoneNumber, mediaType);
-            RequestBody requestBodyAddress = RequestBody.create(etAddress.getText().toString().trim(), mediaType);
-            RequestBody requestBodyPassword = RequestBody.create(etPassword.getText().toString().trim(), mediaType);
-
-            registerUser(requestBodyName, requestBodyPhone, requestBodyPassword, requestBodyAddress);
+//            MediaType mediaType = MediaType.get("multipart/form-data");
+//            RequestBody requestBodyName = RequestBody.create(etName.getText().toString().trim(), mediaType);
+//            RequestBody requestBodyPhone = RequestBody.create(phoneNumber, mediaType);
+//            RequestBody requestBodyAddress = RequestBody.create(etAddress.getText().toString().trim(), mediaType);
+//            RequestBody requestBodyPassword = RequestBody.create(etPassword.getText().toString().trim(), mediaType);
+//
+//            registerUser(requestBodyName, requestBodyPhone, requestBodyPassword, requestBodyAddress);
 
         } else {
             Toast.makeText(mActivity, "All fields must be filled!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void registerUser(RequestBody name, RequestBody phone, RequestBody password, RequestBody address) {
+    private void registerUserFirebase(){
+
+
+    }
+
+        ///Api use
+    private void registerUserWithApi(RequestBody name, RequestBody phone, RequestBody password, RequestBody address) {
 
         UserServices userServices = RetrofitHelper.getInstance().getUserClient();
         userServices.registerNewUser(partFileToUpload, name, phone, password, address)
