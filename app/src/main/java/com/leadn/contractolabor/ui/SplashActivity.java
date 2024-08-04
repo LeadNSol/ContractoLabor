@@ -3,7 +3,6 @@ package com.leadn.contractolabor.ui;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
@@ -18,7 +17,6 @@ import com.leadn.contractolabor.ui.credentials.LoginActivity;
 
 import java.util.List;
 
-import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -28,7 +26,7 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
     private static final int RC_SETTINGS_SCREEN_PERM = 123;
 
 
-    private String TAG = SplashActivity.class.getSimpleName();
+   final private String TAG = SplashActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
